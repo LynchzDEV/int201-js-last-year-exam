@@ -1,39 +1,42 @@
-import { products } from './data/products.js'
+const products = require('./data/products.js');
 
-function itemList(userItems) {
-  const items = userItems
-
-  const initialPage = () => {
-    const inputItem = document.querySelector('input')
-    inputItem.addEventListener('keydown', filterItemsHandler)
-    showItems(items)
-    console.log(inputItem)
+function itemList(userItem) {
+  function initialPage() {
+    const filterInput = document.querySelector('input');
+    filterInput.addEventListener('input', () => {
+      console.log('before enter');
+      filterItemsHandler();
+    });
+    showItems(userItem);
   }
 
-  const filterItemsHandler = (event) => {
-    const inputI = document.querySelector('input')
-    const aryFind = items.filter((e) => e.keywords.toLowerCase().includes((`${inputI.value}`).toLowerCase()))
-    showItems(aryFind)
+  function filterItemsHandler(event) {
+    console.log('enter');
+    const filterInput = document.querySelector('input');
+    const filterValue = filterInput.value;
+    console.log(filterValue);
+    const filterItems = userItem.filter((item) =>
+      item.keywords.toLowerCase().includes(filterValue.toLowerCase())
+    );
+    showItems(filterItems);
   }
 
-  const showItems = (items) => {
-    const aryRecieve = items
-    const ulParent = document.getElementById('items')
-    ulParent.textContent = ''
-    for (let i = 0; i < aryRecieve.length; i++) {
-      const liItem = document.createElement('li')
-      liItem.textContent = `ID:${aryRecieve[i].id}, NAME:${aryRecieve[i].name}, KEYWORDS:${aryRecieve[i].keywords}`
-      ulParent.appendChild(liItem)
-    }
+  function showItems(items) {
+    const outputField = document.getElementById('items');
+    outputField.textContent = '';
+    items.forEach((item) => {
+      const itemList = document.createElement('li');
+      itemList.textContent = `ID:${item.id}, NAME:${item.name}, KEYWORDS:${item.keywords}`;
+      itemList.classList.add(item.id);
+      outputField.appendChild(itemList);
+    });
   }
 
-  return {
-    initialPage,
-    filterItemsHandler,
-    showItems
-  }
+  return { initialPage, filterItemsHandler, showItems };
 }
-export { itemList }
-const { initialPage, filterItemsHandler, showItems } = itemList(products)
-initialPage()
+
+module.exports = itemList;
+// export { itemList };
+const { initialPage, filterItemsHandler, showItems } = itemList(products);
+// initialPage();
 
